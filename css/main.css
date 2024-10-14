@@ -1,67 +1,77 @@
-/*Импорт стилей по необходимости
-@import url();
-*/
-
+/* Импорт шрифта */
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Display:ital,wght@0,100..900;1,100..900&display=swap');
 
+/* Сброс стилей */
 * {
 	margin: 0;
 	padding: 0;
 }
 
+/* Шрифт */
 body {
 	font-family: 'Noto Sans Display', 'Times New Roman', Times, serif;
 	font-weight: 400;
 }
 
+/* Ссылки */
 a {
 	text-decoration: none;
 }
 
+/* Изображения */
 img {
 	max-width: 100%;
 }
 
+/* Контейнер */
 .container {
 	border: 1px solid black;
 	background-color: whitesmoke;
-	padding: 5px;
-	padding-left: 10px;
+	padding: 5px 10px;
 }
 
+/* Заголовок */
 .header {
-	padding: 50px;
+	padding: 20px;
 }
 
+/* Логотип */
 .logo {
 	text-transform: uppercase;
 	font-size: large;
 	font-weight: 800;
 }
 
+/* Меню в заголовке */
 header nav {
 	float: right;
 	width: 75%;
 }
 
+/* Список меню в заголовке */
 header nav ul {
 	list-style: none;
 	display: flex;
 	justify-content: space-between;
 	padding-right: 20px;
 }
+
+/* Элементы списка меню в заголовке */
 header nav ul li {
 	display: inline-block;
 }
 
+/* Ссылки в меню заголовка */
 header nav ul a {
 	color: #000;
 }
 
+/* Эффект наведения в меню заголовка */
 header nav ul a:hover {
 	border-bottom: 3px solid;
 }
 
+/* Инструменты */
 .tools {
 	padding-top: 20px;
 	padding-bottom: 20px;
@@ -70,16 +80,19 @@ header nav ul a:hover {
 	gap: 25px;
 }
 
+/* Панель инструментов */
 .toolbar {
 	overflow: scroll;
 	width: 15vw;
 	height: 85vh;
 }
 
+/* Поле поиска */
 .search {
 	width: 15%;
 }
 
+/* Правая панель */
 .rightbar {
 	position: relative;
 	float: right;
@@ -87,10 +100,12 @@ header nav ul a:hover {
 	width: 50px;
 }
 
+/* Изображения в правой панели */
 nav img {
 	width: 50%;
 }
 
+/* Изображение лупы в поле поиска */
 div.search.container img {
 	position: relative;
 	width: 20px;
