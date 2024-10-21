@@ -1,0 +1,21 @@
+/* Импорт шрифта */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Display:ital,wght@0,100..900;1,100..900&display=swap');
+
+/* Сброс стилей */
+* {
+	margin: 0;
+	padding: 0;
+}
+
+/* Шрифт */
+body {
+	font-family: 'Noto Sans Display', 'Times New Roman', Times, serif;
+	font-weight: 400;
+}
+
+/* Создано автоматически
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+*/

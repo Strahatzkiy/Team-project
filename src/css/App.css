@@ -1,0 +1,139 @@
+/* Сброс стилей */
+* {
+	margin: 0;
+	padding: 0;
+}
+
+/* Ссылки */
+a {
+	text-decoration: none;
+}
+
+/* Изображения */
+img {
+	max-width: 100%;
+}
+
+/* Контейнер */
+.container {
+	border: 1px solid black;
+	background-color: whitesmoke;
+	padding: 5px 10px;
+}
+
+/* Заголовок */
+.header {
+	padding: 20px;
+}
+
+/* Логотип */
+.logo {
+	text-transform: uppercase;
+	font-size: large;
+	font-weight: 800;
+}
+
+/* Меню в заголовке */
+header nav {
+	float: right;
+	width: 75%;
+}
+
+/* Список меню в заголовке */
+header nav ul {
+	list-style: none;
+	display: flex;
+	justify-content: space-between;
+	padding-right: 20px;
+}
+
+/* Элементы списка меню в заголовке */
+header nav ul li {
+	display: inline-block;
+}
+
+/* Ссылки в меню заголовка */
+header nav ul a {
+	color: #000;
+}
+
+/* Эффект наведения в меню заголовка */
+header nav ul a:hover {
+	border-bottom: 3px solid;
+}
+
+/* Инструменты */
+.tools {
+	padding-top: 20px;
+	padding-bottom: 20px;
+	list-style: none;
+	display: grid;
+	gap: 25px;
+}
+
+/* Панель инструментов */
+.toolbar {
+	overflow: scroll;
+	width: 15vw;
+	height: 85vh;
+}
+
+/* Поле поиска */
+.search {
+	width: 15%;
+}
+
+/* Правая панель */
+.rightbar {
+	display: flex;
+	flex-direction: column;
+	position: relative;
+	float: right;
+	top: -600px;
+	width: 32px;
+}
+
+/* Иконка с правой панели */
+.rightbar .icon {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Рабочее пространство */
+.workspace {
+	position: absolute;
+	top: 7vh;
+	left: 16vw;
+	width: 75vw;
+	height: 87.85vh;
+	padding: 10px;
+}
+
+/* Изображения в правой панели */
+nav img {
+	width: 50%;
+}
+
+/* Изображение лупы в поле поиска */
+div.search.container img {
+	position: relative;
+	width: 20px;
+	top: 6px;
+}
+
+/* Запрет на выделение */
+.noselect {
+    -webkit-touch-callout: none;
+      -webkit-user-select: none;
+       -khtml-user-select: none;
+         -moz-user-select: none;
+          -ms-user-select: none;
+              user-select: none;
+                   margin: auto;
+}
+
+/* Эффект во время переноса элемента над рабочим пространством*/
+.dragged-over {
+	background-color: #DDD;
+}
