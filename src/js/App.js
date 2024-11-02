@@ -10,8 +10,8 @@ import copy from "../image/copy.png";
 const App = () => {
   return (
     <>
-      <HeaderContainer />
       <div className="grid">
+        <HeaderContainer />
         <SearchContainer />
         <ToolbarContainer />
         <WorkspaceContainer />
@@ -55,7 +55,7 @@ const ToolbarContainer = ({onDrop}) => {
   const itemsClass1 = [
   { component: <Rectangle/>, type: "rectangle" },
   { component: <Oval/>, type: "oval"}, 
-  { component: <Arrow x1={0} x2={50} y1={0} y2={0}/>, type: "arrow"}]
+  { component: <Arrow x1={0} x2={100} y1={0} y2={0}/>, type: "arrow"}]
 
   return (
     <div className="toolbar container">
