@@ -102,9 +102,9 @@ header nav ul a:hover {
 
 /* Рабочее пространство */
 .workspace {
-	position: absolute;
-	top: 7vh;
-	left: 16vw;
+	position: relative;
+	top: -90vh;
+	left: 16.25vw;
 	width: 75vw;
 	height: 87.85vh;
 	padding: 10px;
