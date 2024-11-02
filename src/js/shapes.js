@@ -57,8 +57,8 @@ export const Oval = () => {
     )
 }
 
-// Стрелка (не работает)
-export const Arrow = (x1, y1, x2, y2) => {
+// Стрелка
+export const Arrow = ({x1, y1, x2, y2}) => {
   // Сохраняем объект в ref
     const ref = useRef(null);
     // Состояние переноса стрелки
@@ -78,21 +78,19 @@ export const Arrow = (x1, y1, x2, y2) => {
 
     return (
       <svg>
-        <div>
         <defs>
-          <marker id="arrow" markerWidth="10" markerHeight="7" refX="0" refY="0" orient="auto">
+          <marker id="arrow" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
             <polygon points="0 0, 10 3.5, 0 7" fill="black" />
           </marker>
         </defs>
         <line ref={ref}
-          x1={x1.x1}
-          y1={x1.y1}
-          x2={x1.x2}
-          y2={x1.y2}
+          x1={x1}
+          y1={y1+10}
+          x2={x2}
+          y2={y2+10}
           markerEnd="url(#arrow)"
           className={`arrow${isDragging ? " dragging" : ""}`}
         />
-        </div>
       </svg>
     );
 }
