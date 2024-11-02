@@ -6,14 +6,14 @@ import { useState, useRef, useEffect } from "react";
 export const WorkspaceContainer = () => {
   const [shapes, setShapes] = useState([]);
   const workspaceRef = useRef(null);
-  const cellSize = 15;
+  const cellSize = 10;
     
   useEffect(() => {
     const initialRectangle = {
       type: "rectangle",
       position: {
-        x: 10,
-        y: 10
+        x: 30,
+        y: 30
       }
     };
     setShapes([initialRectangle]);
