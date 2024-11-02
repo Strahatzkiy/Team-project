@@ -11,10 +11,12 @@ const App = () => {
   return (
     <>
       <HeaderContainer />
-      <SearchContainer />
-      <ToolbarContainer />
-      <RightbarContainer />
-      <WorkspaceContainer />
+      <div className="grid">
+        <SearchContainer />
+        <ToolbarContainer />
+        <WorkspaceContainer />
+        <RightbarContainer />
+      </div>
     </>
   );
 }
