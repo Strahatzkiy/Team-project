@@ -94,6 +94,7 @@ export const WorkspaceContainer = () => {
     >
       <Grid cellSize={cellSize} />
       {shapes.map((shape, index) => (
+        (shape.type === "rectangle" || shape.type === "oval" || shape.type === "arrow") ? (
         <div key={index} 
         onMouseDown={(e) => handleMouseDown(index, e)} 
         style={{ position: 'absolute', left: shape.position.x, top: shape.position.y }}
@@ -106,7 +107,7 @@ export const WorkspaceContainer = () => {
           x2={shape.position.x + 100}
           y2={shape.position.y}
           /> : null))}
-        </div>
+        </div>) : null
       ))}
     </div>
   );
