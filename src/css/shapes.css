@@ -1,0 +1,31 @@
+/* Прямоугольник */
+.rectangle {
+    display: flex;
+    width: 150px;
+    height: 100px;
+    background-color: white;
+    border: 1px solid;
+    border-color: black;
+}
+
+/* Овал */
+.oval {
+    display: flex;
+    width: 150px;
+    height: 100px;
+    background-color: white;
+    border: 1px solid;
+    border-color: black;
+    border-radius: 50%;
+}
+
+/* Стрелка */
+.arrow {
+    stroke-width: 2;
+    stroke: black;
+}
+
+/* Эффект переносимого объекта */
+.dragging {
+    opacity: 0.5;
+}

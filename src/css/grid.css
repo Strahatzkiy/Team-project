@@ -1,0 +1,11 @@
+.grid-line {
+    stroke: black;
+    stroke-width: 1;
+}
+
+.grid {
+    position: absolute;
+    top: 0; 
+    left: 0;
+    pointer-events: 'none';
+}
