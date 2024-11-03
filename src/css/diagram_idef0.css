@@ -1,0 +1,154 @@
+/* Сброс стилей */
+* {
+	margin: 0;
+	padding: 0;
+}
+
+/* Ссылки */
+a {
+	text-decoration: none;
+}
+
+/* Изображения */
+img {
+	max-width: 100%;
+}
+
+/* Сетка для основной части страницы */
+.grid {
+	display: grid;
+	grid-template-columns: 15vw 1fr 48px;
+	gap: 0px;
+	max-width: 100%;
+	box-sizing: border-box;
+	overflow: hidden;
+}
+
+/* Контейнер */
+.container {
+	border: 1px solid black;
+	background-color: whitesmoke;
+	padding: 5px 10px;
+}
+
+/* Заголовок */
+.header {
+	grid-column: 1 / span 3;
+	padding: 20px;
+}
+
+/* Логотип */
+.logo {
+	text-transform: uppercase;
+	font-size: large;
+	font-weight: 800;
+}
+
+/* Меню в заголовке */
+header nav {
+	float: right;
+	width: 75%;
+}
+
+/* Список меню в заголовке */
+header nav ul {
+	list-style: none;
+	display: flex;
+	justify-content: space-between;
+	padding-right: 20px;
+}
+
+/* Элементы списка меню в заголовке */
+header nav ul li {
+	display: inline-block;
+}
+
+/* Ссылки в меню заголовка */
+header nav ul a {
+	color: #000;
+}
+
+/* Эффект наведения в меню заголовка */
+header nav ul a:hover {
+	border-bottom: 3px solid;
+}
+
+/* Инструменты */
+.tools {
+	padding-top: 20px;
+	padding-bottom: 20px;
+	list-style: none;
+	display: grid;
+	gap: 25px;
+}
+
+/* Панель инструментов */
+.toolbar {
+	grid-column: 1;
+	overflow: scroll;
+}
+
+/* Поле поиска */
+.search {
+	grid-column: 1;
+	display: inline-block;
+	height: 3vh;
+}
+
+/* Правая панель */
+.rightbar {
+	grid-column: 3;
+	grid-row: 3;
+	display: flex;
+	flex-direction: column;
+	position: relative;
+	float: right;
+	width: 32px;
+	height: 96px;
+}
+
+/* Иконка с правой панели */
+.rightbar .icon {
+  display: block;
+  max-width: 32px;
+  max-height: 32px;
+  width: 100%;
+  height: 100%;
+}
+
+/* Рабочее пространство */
+.workspace {
+	grid-column: 2;
+	grid-row: 2 / span 2;
+	display: inline-block;
+	position: relative;
+	padding: 10px;
+}
+
+/* Изображения в правой панели */
+nav img {
+	width: 50%;
+}
+
+/* Изображение лупы в поле поиска */
+div.search.container img {
+	position: relative;
+	width: 20px;
+	top: 6px;
+}
+
+/* Запрет на выделение */
+.noselect {
+    -webkit-touch-callout: none;
+      -webkit-user-select: none;
+       -khtml-user-select: none;
+         -moz-user-select: none;
+          -ms-user-select: none;
+              user-select: none;
+                   margin: auto;
+}
+
+/* Эффект во время переноса элемента над рабочим пространством*/
+.dragged-over {
+	background-color: #DDD;
+}
