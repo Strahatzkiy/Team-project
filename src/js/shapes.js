@@ -4,7 +4,7 @@ import { draggable } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import invariant from "tiny-invariant";
 
 // Прямоугольник
-export const Rectangle = () => {
+export const Rectangle = ({width, height}) => {
     // Сохраняем объект в ref
     const ref = useRef(null);
     // Состояние переноса прямоугольника
@@ -25,7 +25,12 @@ export const Rectangle = () => {
     return (
       <div
         ref={ref}
+        id={"shape"}
         className={`rectangle ${isDragging ? "dragging" : ""}`} 
+        style={{
+        width: `${width}px`,
+        height: `${height}px`}
+        }
       />
     );
   }
@@ -52,6 +57,7 @@ export const Oval = () => {
     return (
       <div
         ref={ref}
+        id={"shape"}
         className={`oval ${isDragging ? "dragging" : ""}`}
       />
     )
@@ -77,7 +83,7 @@ export const Arrow = ({x1, y1, x2, y2}) => {
     });
 
     return (
-      <svg width={150} height={50}>
+      <svg width={Math.abs(x2-x1)+20} height={Math.abs(y2-y1)+20} style={{position: "absolute", x: 0, y: 0}}>
         <defs>
           <marker id="arrow" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
             <polygon points="0 0, 10 3.5, 0 7" fill="black" />
@@ -85,9 +91,9 @@ export const Arrow = ({x1, y1, x2, y2}) => {
         </defs>
         <line ref={ref}
           x1={x1}
-          y1={y1+10}
+          y1={y1}
           x2={x2}
-          y2={y2+10}
+          y2={y2}
           markerEnd="url(#arrow)"
           className={`arrow${isDragging ? " dragging" : ""}`}
         />
