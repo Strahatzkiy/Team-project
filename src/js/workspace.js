@@ -9,14 +9,61 @@ export const WorkspaceContainer = () => {
   const cellSize = 10;
     
   useEffect(() => {
+    const rect = workspaceRef.current.getBoundingClientRect();
     const initialRectangle = {
       type: "rectangle",
       position: {
-        x: 30,
-        y: 30
-      }
+        x: Math.round((rect.width - 450) / (2 * cellSize)) * cellSize,
+        y: Math.round((rect.height - 300) / (2  * cellSize)) * cellSize
+      },
+      width: 450,
+      height: 300,
     };
-    setShapes([initialRectangle]);
+    const initialArrowInput = {
+      type: "arrow",
+      position: {
+        x: Math.round((rect.width - 685) / (2 * cellSize)) * cellSize,
+        y: Math.round((rect.height) / (2 * cellSize)) * cellSize,
+      },
+      x1: 0,
+      y1: 0,
+      x2: 100,
+      y2: 0,
+    }
+    const initialArrowOutput = {
+      type: "arrow",
+      position: {
+        x: Math.round((rect.width + 215 + 235) / (2 * cellSize)) * cellSize,
+        y: Math.round((rect.height) / (2 * cellSize)) * cellSize,
+      },
+      x1: 0,
+      y1: 0,
+      x2: 100,
+      y2: 0,
+    }
+    const initialArrowMechanism = {
+      type: "arrow",
+      position: {
+        x: Math.round((rect.width) / (2 * cellSize)) * cellSize,
+        y: Math.round((rect.height + 300) / (2 * cellSize)) * cellSize,
+      },
+      x1: 10,
+      y1: 110,
+      x2: 10,
+      y2: 10,
+    }
+    const initialArrowManagement = {
+      type: "arrow",
+      position: {
+        x: Math.round((rect.width) / (2 * cellSize)) * cellSize,
+        y: Math.round((rect.height - 560) / (2 * cellSize)) * cellSize,
+      },
+      x1: 10,
+      y1: 0,
+      x2: 10,
+      y2: 100,
+    }
+    setShapes([initialRectangle, initialArrowInput, initialArrowOutput, initialArrowMechanism, initialArrowManagement]);
   }, []);
 
   const handleDrop = (e) => {
@@ -59,8 +106,8 @@ export const WorkspaceContainer = () => {
       const newShapes = [...shapes];
       let newX = Math.round((e.clientX - rect.left - offsetX) / cellSize) * cellSize;
       let newY = Math.round((e.clientY - rect.top - offsetY) / cellSize) * cellSize;
-      const shapeWidth = 150;
-      const shapeHeight = 100;
+      const shapeWidth = shape.width;
+      const shapeHeight = shape.height;
 
       // Проверка на выход за пределы рабочего пространства
       if (newX < 0) newX = 0;
@@ -99,13 +146,13 @@ export const WorkspaceContainer = () => {
         onMouseDown={(e) => handleMouseDown(index, e)} 
         style={{ position: 'absolute', left: shape.position.x, top: shape.position.y }}
         >
-          {shape.type === "rectangle" ? <Rectangle draggable={false} /> : 
+          {shape.type === "rectangle" ? <Rectangle draggable={false} width={shape.width} height={shape.height}/> : 
           (shape.type === "oval" ? <Oval draggable={false} /> : 
           (shape.type === "arrow" ? <Arrow draggable={false} 
-          x1={shape.position.x} 
-          y1={shape.position.y}
-          x2={shape.position.x + 100}
-          y2={shape.position.y}
+          x1={shape.x1} 
+          y1={shape.y1}
+          x2={shape.x2}
+          y2={shape.y2}
           /> : null))}
         </div>) : null
       ))}
