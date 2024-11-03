@@ -10,6 +10,20 @@ export const WorkspaceContainer = () => {
     
   useEffect(() => {
     const rect = workspaceRef.current.getBoundingClientRect();
+
+    const createArrow = (offsetX, offsetY, x1, y1, x2, y2) => ({
+      type: "arrow",
+      position: {
+        x: Math.round((rect.width + offsetX) / (2 * cellSize)) * cellSize,
+        y: Math.round((rect.height + offsetY) / (2 * cellSize)) * cellSize,
+      },
+      x1,
+      y1,
+      x2,
+      y2,
+      canDrag: false,
+    });
+
     const initialRectangle = {
       type: "rectangle",
       position: {
@@ -18,51 +32,14 @@ export const WorkspaceContainer = () => {
       },
       width: 450,
       height: 300,
+      canDrag: false,
     };
-    const initialArrowInput = {
-      type: "arrow",
-      position: {
-        x: Math.round((rect.width - 685) / (2 * cellSize)) * cellSize,
-        y: Math.round((rect.height) / (2 * cellSize)) * cellSize,
-      },
-      x1: 0,
-      y1: 0,
-      x2: 100,
-      y2: 0,
-    }
-    const initialArrowOutput = {
-      type: "arrow",
-      position: {
-        x: Math.round((rect.width + 215 + 235) / (2 * cellSize)) * cellSize,
-        y: Math.round((rect.height) / (2 * cellSize)) * cellSize,
-      },
-      x1: 0,
-      y1: 0,
-      x2: 100,
-      y2: 0,
-    }
-    const initialArrowMechanism = {
-      type: "arrow",
-      position: {
-        x: Math.round((rect.width) / (2 * cellSize)) * cellSize,
-        y: Math.round((rect.height + 300) / (2 * cellSize)) * cellSize,
-      },
-      x1: 10,
-      y1: 110,
-      x2: 10,
-      y2: 10,
-    }
-    const initialArrowManagement = {
-      type: "arrow",
-      position: {
-        x: Math.round((rect.width) / (2 * cellSize)) * cellSize,
-        y: Math.round((rect.height - 560) / (2 * cellSize)) * cellSize,
-      },
-      x1: 10,
-      y1: 0,
-      x2: 10,
-      y2: 100,
-    }
+
+    const initialArrowInput = createArrow(-685, -10, 0, 10, 100, 10);
+    const initialArrowOutput = createArrow(450, -10, 0, 10, 100, 10);
+    const initialArrowMechanism = createArrow(-10, 310, 10, 110, 10, 20);
+    const initialArrowManagement = createArrow(-10, -540, 10, 0, 10, 100);
+
     setShapes([initialRectangle, initialArrowInput, initialArrowOutput, initialArrowMechanism, initialArrowManagement]);
   }, []);
 
@@ -78,7 +55,8 @@ export const WorkspaceContainer = () => {
         position: {
           x: Math.round((clientX - rect.left - 75) / cellSize) * cellSize,
           y: Math.round((clientY - rect.top - 50) / cellSize) * cellSize
-        }
+        },
+        canDrag: true,
       };
       setShapes((prevShapes) => [...prevShapes, newShape]);
     }
@@ -103,23 +81,25 @@ export const WorkspaceContainer = () => {
 
     const handleMouseMove = (e) => {
       const rect = workspaceRef.current.getBoundingClientRect();
-      const newShapes = [...shapes];
-      let newX = Math.round((e.clientX - rect.left - offsetX) / cellSize) * cellSize;
-      let newY = Math.round((e.clientY - rect.top - offsetY) / cellSize) * cellSize;
-      const shapeWidth = shape.width;
-      const shapeHeight = shape.height;
+      if (shape.canDrag) {
+        const newShapes = [...shapes];
+        let newX = Math.round((e.clientX - rect.left - offsetX) / cellSize) * cellSize;
+        let newY = Math.round((e.clientY - rect.top - offsetY) / cellSize) * cellSize;
+        const shapeWidth = shape.width;
+        const shapeHeight = shape.height;
 
-      // Проверка на выход за пределы рабочего пространства
-      if (newX < 0) newX = 0;
-      if (newY < 0) newY = 0;
-      if (newX + shapeWidth > rect.width) newX = rect.width - shapeWidth - 4;
-      if (newY + shapeHeight > rect.height) newY = rect.height - shapeHeight - 4;
-
-      newShapes[index].position = {
-        x: newX,
-        y: newY
-      };
-      setShapes(newShapes);
+        // Проверка на выход за пределы рабочего пространства
+        if (newX < 0) newX = 0;
+        if (newY < 0) newY = 0;
+        if (newY + shapeHeight > rect.height) newY = rect.height - shapeHeight - 4;
+        if (newX + shapeWidth > rect.width) newX = rect.width - shapeWidth - 4;
+        
+        newShapes[index].position = {
+          x: newX,
+          y: newY
+        };
+        setShapes(newShapes);
+      }
     };
 
     const handleMouseUp = () => {
