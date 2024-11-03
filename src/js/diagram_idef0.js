@@ -9,6 +9,7 @@ import copy from "../image/copy.png";
 
 // Главная функция
 export const Idef0 = () => {
+  document.title = 'Диаграмма Idef0'
   return (
     <>
       <div className="grid">

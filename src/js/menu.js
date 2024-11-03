@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 
 // Главная функция
 export const Menu = () => {
+	document.title = "Меню"
     return (
       <>
 		<h1>Меню</h1>
