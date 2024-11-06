@@ -5,43 +5,168 @@ import { useState, useRef, useEffect } from "react";
 // Контейнер рабочего пространства
 export const WorkspaceContainer = () => {
   const [shapes, setShapes] = useState([]);
+  const [windowSize, setWindowSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
   const workspaceRef = useRef(null);
   const cellSize = 10;
+
+      const arrowPosition = (params) => {
+        const { side, offsetX, offsetY, rectangle } = params;
+        switch (side) {
+          case "top":
+            params.x += rectangle.width / 2 + offsetX;
+            params.y -= 120;
+            params.y1 = 0;
+            params.y2 = 100;
+            break;
+          case "bottom":
+            params.x += rectangle.width / 2 + offsetX;
+            params.y += rectangle.height;
+            params.y1 = 120;
+            params.y2 = 20;
+            break;
+          case "left":
+            params.x -= 120;
+            params.y += rectangle.height / 2 + offsetY;
+            params.x1 = 0;
+            params.x2 = 100;
+            break;
+          case "right":
+            params.x += rectangle.width;
+            params.y += rectangle.height / 2 + offsetY;
+            params.x1 = 0;
+            params.x2 = 100;
+            break;
+        }
+        return (params);
+      }
     
   useEffect(() => {
     const rect = workspaceRef.current.getBoundingClientRect();
 
-    const createArrow = (offsetX, offsetY, x1, y1, x2, y2) => ({
-      type: "arrow",
-      position: {
-        x: Math.round((rect.width + offsetX) / (2 * cellSize)) * cellSize,
-        y: Math.round((rect.height + offsetY) / (2 * cellSize)) * cellSize,
-      },
-      x1,
-      y1,
-      x2,
-      y2,
-      canDrag: false,
-    });
+    /*const savedShapes = localStorage.getItem("shapes-idef0");
+    if (savedShapes) {
+      setShapes(JSON.parse(savedShapes));
+      console.log(savedShapes);
+      console.log(shapes);
+    }
 
-    const initialRectangle = {
-      type: "rectangle",
-      position: {
-        x: Math.round((rect.width - 450) / (2 * cellSize)) * cellSize,
-        y: Math.round((rect.height - 300) / (2  * cellSize)) * cellSize
-      },
-      width: 450,
-      height: 300,
-      canDrag: false,
-      canType: true,
+    else {*/
+      const initialRectangle = {
+        type: "rectangle",
+        id: "main-rectangle",
+        position: {
+          x: Math.round((rect.width - 448) / (2 * cellSize)) * cellSize,
+          y: Math.round((rect.height - 298) / (2  * cellSize)) * cellSize
+        },
+        width: 448,
+        height: 298,
+        canDrag: false,
+        canType: true,
+        text: "Диаграмма",
+      };
+
+      const createArrow = (side, offsetX, offsetY, rectangle) => {
+        let params = {
+          x: rectangle.position.x,
+          y: rectangle.position.y,
+          x1: 10,
+          y1: 10,
+          x2: 10,
+          y2: 10,
+          side,
+          offsetX,
+          offsetY,
+          rectangle
+        };
+  
+        params = arrowPosition(params);
+
+        // Округление значений
+        params.x = Math.round(params.x / cellSize) * cellSize;
+        params.y = Math.round(params.y / cellSize) * cellSize;
+        params.x1 = Math.round(params.x1 / cellSize) * cellSize;
+        params.y1 = Math.round(params.y1 / cellSize) * cellSize;
+        params.x2 = Math.round(params.x2 / cellSize) * cellSize;
+        params.y2 = Math.round(params.y2 / cellSize) * cellSize;
+        return {
+          type: "arrow",
+          position: {
+              x: params.x,
+              y: params.y,
+          },
+          x1: params.x1,
+          y1: params.y1,
+          x2: params.x2,
+          y2: params.y2,
+          canDrag: false,
+        };
+  
+      };
+
+      const initialArrowInput = createArrow("left", 0, 0, initialRectangle);
+      const initialArrowOutput = createArrow("right", 0, 0, initialRectangle);
+      const initialArrowMechanism = createArrow("bottom", 0, 0, initialRectangle);
+      const initialArrowManagement = createArrow("top", 0, 0, initialRectangle);
+
+      setShapes([initialRectangle, initialArrowInput, initialArrowOutput, initialArrowMechanism, initialArrowManagement])
+    //}
+
+    const handleResize = () => {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+
+      /*const newShapes = shapes.map((shape) => {
+        if (shape.type === "rectangle") {
+          return {
+            ...shape,
+            position: {
+              x: Math.round((windowSize.width - shape.width) / (2 * cellSize)) * cellSize,
+              y: Math.round((windowSize.height - shape.height) / (2  * cellSize)) * cellSize,
+            }
+          }
+        } else if (shape.type === "arrow") {
+          const rectangle = shapes.find((s) => s.id === "main-rectangle");
+          if (rectangle) {
+            let params = {
+              x: rectangle.position.x,
+              y: rectangle.position.y,
+              x1: 10,
+              y1: 10,
+              x2: 10,
+              y2: 10,
+              side: shape.side,
+              offsetX: 0,
+              offsetY: 0,
+              rectangle
+            };
+            console.log(shape.side);
+            params = arrowPosition(params);
+            return {
+              ...shape,
+              x: params.x,
+              y: params.y,
+              x1: params.x1,
+              y1: params.y1,
+              x2: params.x2,
+              y2: params.y2,
+            }
+          }
+        }
+        return shape;
+      });
+
+      setShapes(newShapes);
+
+      console.log(shapes);*/
     };
-
-    const initialArrowInput = createArrow(-685, -10, 0, 10, 100, 10);
-    const initialArrowOutput = createArrow(450, -10, 0, 10, 100, 10);
-    const initialArrowMechanism = createArrow(-10, 300, 10, 110, 10, 20);
-    const initialArrowManagement = createArrow(-10, -540, 10, 0, 10, 100);
-
-    setShapes([initialRectangle, initialArrowInput, initialArrowOutput, initialArrowMechanism, initialArrowManagement]);
+    
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const handleDrop = (e) => {
@@ -125,6 +250,15 @@ export const WorkspaceContainer = () => {
     window.addEventListener('mouseup', handleMouseUp);
     window.addEventListener('contextmenu', handleContextMenu);
   };
+
+  const updateShapeText = (index, newText) => {
+    setShapes(prevShapes => {
+      const updatedShapes = [...prevShapes];
+      updatedShapes[index].text = newText;
+      localStorage.setItem("shapes-idef0", JSON.stringify(updatedShapes));
+      return updatedShapes;
+    });
+  };  
   
   return (
     <div ref={workspaceRef}
@@ -132,15 +266,25 @@ export const WorkspaceContainer = () => {
       onDragOver={handleDragOver}
       className="workspace container"
       id="workspace"
+      width={windowSize.width}
+      height={windowSize.height*0.9}
     >
-      <Grid cellSize={cellSize} />
+      <Grid cellSize={cellSize} windowSize={windowSize} />
       {shapes.map((shape, index) => (
         (shape.type === "rectangle" || shape.type === "oval" || shape.type === "arrow") ? (
         <div key={index} 
         onMouseDown={(e) => handleMouseDown(index, e)} 
         style={{ position: 'absolute', left: shape.position.x, top: shape.position.y }}
         >
-          {shape.type === "rectangle" ? <Rectangle draggable={false} width={shape.width} height={shape.height} canDrag={shape.canDrag} canType={shape.canType}/> : 
+          {shape.type === "rectangle" ? 
+          <Rectangle 
+            draggable={false} 
+            width={shape.width} 
+            height={shape.height} 
+            content={shape.text} 
+            canDrag={shape.canDrag} 
+            canType={shape.canType}
+            onTextChanged={(newText) => updateShapeText(index, newText)}/> : 
           (shape.type === "oval" ? <Oval draggable={false} /> : 
           (shape.type === "arrow" ? <Arrow draggable={false} 
           x1={shape.x1} 

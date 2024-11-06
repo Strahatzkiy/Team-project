@@ -4,13 +4,13 @@ import { draggable } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import invariant from "tiny-invariant";
 
 // Прямоугольник
-export const Rectangle = ({width, height, canDrag, canType}) => {
+export const Rectangle = ({width, height, content, canDrag, canType, onTextChanged}) => {
     // Сохраняем объект в ref
     const ref = useRef(null);
     // Состояние переноса прямоугольника
     const [isDragging, setIsDragging] = useState(false);
     // Состояние для текста
-    const [text, setText] = useState("Диаграмма");
+    const [text, setText] = useState(content);
     // Состояние редактирования
     const [isEditing, setIsEditing] = useState(false);
   
@@ -34,13 +34,17 @@ export const Rectangle = ({width, height, canDrag, canType}) => {
     }
 
     const handleBlur = (e) => {
-      setText(e.target.value || "");
+      const newText = e.target.value || "";
+      setText(newText);
+      onTextChanged(newText);
       setIsEditing(false);
     }
 
     const handleKeyDown = (e) => {
       if (e.key === "Enter") {
-        setText(e.target.value || "");
+        const newText = e.target.value || "";
+        setText(newText);
+        onTextChanged(newText);
         setIsEditing(false);
       }
       if (e.key === "Escape") {
