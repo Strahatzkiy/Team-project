@@ -3,9 +3,10 @@
     stroke-width: 1;
 }
 
-.grid {
+.grid-diagram {
     position: absolute;
     top: 0; 
     left: 0;
     pointer-events: 'none';
+    opacity: 1;
 }

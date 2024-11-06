@@ -20,8 +20,8 @@ img {
 	grid-template-columns: 15vw 1fr 48px;
 	gap: 0px;
 	max-width: 100%;
+	max-height: 100%;
 	box-sizing: border-box;
-	overflow: hidden;
 }
 
 /* Контейнер */
@@ -103,6 +103,7 @@ header nav ul a:hover {
 	flex-direction: column;
 	position: relative;
 	float: right;
+	right: 6px;
 	width: 32px;
 	height: 96px;
 }
@@ -119,10 +120,10 @@ header nav ul a:hover {
 /* Рабочее пространство */
 .workspace {
 	grid-column: 1 / span 3;
-	grid-row: 2 / span 2;
+	grid-row: 2;
 	display: inline-block;
 	position: relative;
-	padding: 10px;
+	overflow: hidden;
 }
 
 /* Изображения в правой панели */
