@@ -3,6 +3,8 @@
     display: flex;
     width: 150px;
     height: 100px;
+    align-items: center;
+    justify-content: center;
     background-color: white;
     border: 1px solid;
     border-color: black;
@@ -23,6 +25,12 @@
 .arrow {
     stroke-width: 2;
     stroke: black;
+}
+
+.input-diagram {
+    text-align: center;
+    font-size: 40pt; 
+    user-select: all;
 }
 
 /* Эффект переносимого объекта */

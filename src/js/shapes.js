@@ -4,23 +4,49 @@ import { draggable } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import invariant from "tiny-invariant";
 
 // Прямоугольник
-export const Rectangle = ({width, height}) => {
+export const Rectangle = ({width, height, canDrag, canType}) => {
     // Сохраняем объект в ref
     const ref = useRef(null);
     // Состояние переноса прямоугольника
     const [isDragging, setIsDragging] = useState(false);
+    // Состояние для текста
+    const [text, setText] = useState("Диаграмма");
+    // Состояние редактирования
+    const [isEditing, setIsEditing] = useState(false);
   
     // Эффект при переносе прямоугольника
     useEffect(() => {
       const rectE1 = ref.current;
       invariant(rectE1);
-  
-      return draggable({
-        element: rectE1,
-        onDragStart: () => setIsDragging(true),
-        onDrop: () => setIsDragging(false),
-      });
-    });
+      if (canDrag) {
+        return draggable({
+          element: rectE1,
+          onDragStart: () => setIsDragging(true),
+          onDrop: () => setIsDragging(false),
+        });
+      }
+    }, [canDrag]);
+
+    const handleDoubleClick = () => {
+      if (canType) {
+        setIsEditing(true);
+      }
+    }
+
+    const handleBlur = (e) => {
+      setText(e.target.value || "");
+      setIsEditing(false);
+    }
+
+    const handleKeyDown = (e) => {
+      if (e.key === "Enter") {
+        setText(e.target.value || "");
+        setIsEditing(false);
+      }
+      if (e.key === "Escape") {
+        setIsEditing(false);
+      }
+    }
   
     return (
       <div
@@ -31,12 +57,29 @@ export const Rectangle = ({width, height}) => {
         width: `${width}px`,
         height: `${height}px`}
         }
-      />
+        onDoubleClick={handleDoubleClick} 
+      >
+        {
+        (isEditing && canType ? 
+          (<input 
+            type="text" 
+            defaultValue={text}
+            onBlur={handleBlur}
+            onKeyDown={handleKeyDown}
+            autoFocus 
+            className="input-diagram"
+            style={{
+              width: `${width}px`,
+              height: `${height}px`, }}
+            />
+          ) : (<span style={{textAlign: "center", fontSize: "40pt"}}>{text}</span>))
+          }
+      </div>
     );
   }
   
 // Овал
-export const Oval = () => {
+export const Oval = ({width, height, canDrag}) => {
   // Сохраняем объект в ref
     const ref = useRef(null);
     // Состояние переноса овала
@@ -46,12 +89,13 @@ export const Oval = () => {
     useEffect(() => {
       const ovalE1 = ref.current;
       invariant(ovalE1);
-  
-      return draggable({
-        element: ovalE1,
-        onDragStart: () => setIsDragging(true),
-        onDrop: () => setIsDragging(false),
-      });
+      if (canDrag) {
+        return draggable({
+          element: ovalE1,
+          onDragStart: () => setIsDragging(true),
+          onDrop: () => setIsDragging(false),
+        });
+      };
     });
   
     return (
@@ -64,7 +108,7 @@ export const Oval = () => {
 }
 
 // Стрелка
-export const Arrow = ({x1, y1, x2, y2}) => {
+export const Arrow = ({x1, y1, x2, y2, canDrag}) => {
   // Сохраняем объект в ref
     const ref = useRef(null);
     // Состояние переноса стрелки
@@ -74,12 +118,13 @@ export const Arrow = ({x1, y1, x2, y2}) => {
     useEffect(() => {
       const arrowE1 = ref.current;
       invariant(arrowE1);
-  
-      return draggable({
-        element: arrowE1,
-        onDragStart: () => setIsDragging(true),
-        onDrop: () => setIsDragging(false),
-      });
+      if (canDrag) {
+        return draggable({
+          element: arrowE1,
+          onDragStart: () => setIsDragging(true),
+          onDrop: () => setIsDragging(false),
+        });
+      }
     });
 
     return (
