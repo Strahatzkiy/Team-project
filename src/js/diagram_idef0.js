@@ -1,6 +1,7 @@
 import "../css/diagram_idef0.css";
 import { Rectangle, Oval, Arrow } from "./shapes.js";
-import { WorkspaceContainer } from "./workspace.js"
+import { WorkspaceContainer } from "./workspace.js";
+import { handleDownload } from "./download.js";
 import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import lupa from "../image/lupa.png";
@@ -14,8 +15,6 @@ export const Idef0 = () => {
     <>
       <div className="grid">
         <HeaderContainer />
-        <SearchContainer />
-        <ToolbarContainer />
         <WorkspaceContainer />
         <RightbarContainer />
       </div>
@@ -35,7 +34,7 @@ const HeaderContainer = () => {
         <li><a href="#">Имя файла</a></li>
         <li><a href="#">Файл</a></li>
         <li><a href="#">Поделиться</a></li>
-        <li><a href="#">Экспортировать</a></li>
+        <li><a href="download" onClick={(e) => { e.preventDefault(); handleDownload(); }}>Экспортировать</a></li>
         <li><a href="#">Вид</a></li>
         <li><a href="#">Настройки</a></li>
       </ul>
@@ -57,9 +56,9 @@ const SearchContainer = () => {
 // Контейнер панели инструментов
 const ToolbarContainer = ({onDrop}) => {
   const itemsClass1 = [
-  { component: <Rectangle/>, type: "rectangle" },
-  { component: <Oval/>, type: "oval"}, 
-  { component: <Arrow x1={0} x2={100} y1={0} y2={0}/>, type: "arrow"}]
+  { component: <Rectangle canDrag={false} width={150} height={100} />, type: "rectangle" },
+  { component: <Oval canDrag={false} width={150} height={100} />, type: "oval"}, 
+  { component: <Arrow x1={0} x2={100} y1={10} y2={10} canDrag={true}/>, type: "arrow"}]
 
   return (
     <div className="toolbar container">
