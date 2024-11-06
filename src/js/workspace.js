@@ -33,11 +33,12 @@ export const WorkspaceContainer = () => {
       width: 450,
       height: 300,
       canDrag: false,
+      canType: true,
     };
 
     const initialArrowInput = createArrow(-685, -10, 0, 10, 100, 10);
     const initialArrowOutput = createArrow(450, -10, 0, 10, 100, 10);
-    const initialArrowMechanism = createArrow(-10, 310, 10, 110, 10, 20);
+    const initialArrowMechanism = createArrow(-10, 300, 10, 110, 10, 20);
     const initialArrowManagement = createArrow(-10, -540, 10, 0, 10, 100);
 
     setShapes([initialRectangle, initialArrowInput, initialArrowOutput, initialArrowMechanism, initialArrowManagement]);
@@ -46,17 +47,29 @@ export const WorkspaceContainer = () => {
   const handleDrop = (e) => {
     e.preventDefault();
     const shape = e.dataTransfer.getData("text/plain");
-    const { clientX, clientY } = e;
 
     if (shape && workspaceRef.current) {
       const rect = workspaceRef.current.getBoundingClientRect();
+      const shapeWidth = 150;
+      const shapeHeight = 100;
+      const offsetX = shapeWidth / 2;
+      const offsetY = shapeHeight / 2;
+      let newX = Math.round((e.clientX - rect.left - offsetX) / cellSize) * cellSize;
+      let newY = Math.round((e.clientY - rect.top - offsetY) / cellSize) * cellSize;
+      if (newX < 0) newX = 0;
+      if (newY < 0) newY = 0;
+      if (newY + shapeHeight > rect.height) newY = rect.height - shapeHeight - 4;
+      if (newX + shapeWidth > rect.width) newX = rect.width - shapeWidth - 4;
       const newShape = {
         type: shape,
         position: {
-          x: Math.round((clientX - rect.left - 75) / cellSize) * cellSize,
-          y: Math.round((clientY - rect.top - 50) / cellSize) * cellSize
+          x: newX,
+          y: newY
         },
         canDrag: true,
+        canType: true,
+        width: {shapeWidth},
+        height: {shapeHeight},
       };
       setShapes((prevShapes) => [...prevShapes, newShape]);
     }
@@ -118,6 +131,7 @@ export const WorkspaceContainer = () => {
       onDrop={handleDrop}
       onDragOver={handleDragOver}
       className="workspace container"
+      id="workspace"
     >
       <Grid cellSize={cellSize} />
       {shapes.map((shape, index) => (
@@ -126,7 +140,7 @@ export const WorkspaceContainer = () => {
         onMouseDown={(e) => handleMouseDown(index, e)} 
         style={{ position: 'absolute', left: shape.position.x, top: shape.position.y }}
         >
-          {shape.type === "rectangle" ? <Rectangle draggable={false} width={shape.width} height={shape.height}/> : 
+          {shape.type === "rectangle" ? <Rectangle draggable={false} width={shape.width} height={shape.height} canDrag={shape.canDrag} canType={shape.canType}/> : 
           (shape.type === "oval" ? <Oval draggable={false} /> : 
           (shape.type === "arrow" ? <Arrow draggable={false} 
           x1={shape.x1} 
