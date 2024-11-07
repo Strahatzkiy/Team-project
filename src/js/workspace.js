@@ -46,14 +46,12 @@ export const WorkspaceContainer = () => {
   useEffect(() => {
     const rect = workspaceRef.current.getBoundingClientRect();
 
-    /*const savedShapes = localStorage.getItem("shapes-idef0");
+    const savedShapes = localStorage.getItem("shapes-idef0");
     if (savedShapes) {
       setShapes(JSON.parse(savedShapes));
-      console.log(savedShapes);
-      console.log(shapes);
     }
 
-    else {*/
+    else {
       const initialRectangle = {
         type: "rectangle",
         id: "main-rectangle",
@@ -101,6 +99,7 @@ export const WorkspaceContainer = () => {
           y1: params.y1,
           x2: params.x2,
           y2: params.y2,
+          side: params.side,
           canDrag: false,
         };
   
@@ -112,62 +111,67 @@ export const WorkspaceContainer = () => {
       const initialArrowManagement = createArrow("top", 0, 0, initialRectangle);
 
       setShapes([initialRectangle, initialArrowInput, initialArrowOutput, initialArrowMechanism, initialArrowManagement])
-    //}
+    }
+  }, [])
 
+  useEffect(() => {
     const handleResize = () => {
       setWindowSize({
         width: window.innerWidth,
         height: window.innerHeight,
       });
-
-      /*const newShapes = shapes.map((shape) => {
-        if (shape.type === "rectangle") {
-          return {
-            ...shape,
-            position: {
-              x: Math.round((windowSize.width - shape.width) / (2 * cellSize)) * cellSize,
-              y: Math.round((windowSize.height - shape.height) / (2  * cellSize)) * cellSize,
-            }
-          }
-        } else if (shape.type === "arrow") {
-          const rectangle = shapes.find((s) => s.id === "main-rectangle");
-          if (rectangle) {
-            let params = {
-              x: rectangle.position.x,
-              y: rectangle.position.y,
-              x1: 10,
-              y1: 10,
-              x2: 10,
-              y2: 10,
-              side: shape.side,
-              offsetX: 0,
-              offsetY: 0,
-              rectangle
-            };
-            console.log(shape.side);
-            params = arrowPosition(params);
+      const rect = workspaceRef.current.getBoundingClientRect();
+      setShapes((prevShapes) => {
+        return prevShapes.map((shape) => {
+          if (shape.type === "rectangle") {
+            const newX = Math.round((rect.width - shape.width) / (2 * cellSize)) * cellSize;
+            const newY = Math.round((rect.height - shape.height) / (2 * cellSize)) * cellSize;
             return {
               ...shape,
-              x: params.x,
-              y: params.y,
-              x1: params.x1,
-              y1: params.y1,
-              x2: params.x2,
-              y2: params.y2,
+              position: {
+                x: newX,
+                y: newY,
+              }
+            }
+          } else if (shape.type === "arrow") {
+            const rectangle = prevShapes.find((s) => s.id === "main-rectangle");
+            if (rectangle) {
+              let params = {
+                x: Math.round((rect.width - rectangle.width) / (2 * cellSize)) * cellSize,
+                y: Math.round((rect.height - rectangle.height) / (2 * cellSize)) * cellSize,
+                x1: 10,
+                y1: 10,
+                x2: 10,
+                y2: 10,
+                side: shape.side,
+                offsetX: 0,
+                offsetY: 0,
+                rectangle
+              };
+              params = arrowPosition(params);
+              return {
+                ...shape,
+                position: {
+                  x: params.x,
+                  y: params.y,
+                },
+                x1: params.x1,
+                y1: params.y1,
+                x2: params.x2,
+                y2: params.y2,
+              }
             }
           }
-        }
-        return shape;
+          return shape;
+        });
       });
-
-      setShapes(newShapes);
-
-      console.log(shapes);*/
+      console.log(rect);
     };
     
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+  
 
   const handleDrop = (e) => {
     e.preventDefault();
