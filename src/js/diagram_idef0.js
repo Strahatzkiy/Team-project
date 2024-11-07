@@ -2,6 +2,8 @@ import "../css/diagram_idef0.css";
 import { Rectangle, Oval, Arrow } from "./shapes.js";
 import { WorkspaceContainer } from "./workspace.js";
 import { handleDownload } from "./download.js";
+import { clearWorkspace } from "./clear.js";
+import { Settings } from "./settings.js";
 import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import lupa from "../image/lupa.png";
@@ -24,6 +26,9 @@ export const Idef0 = () => {
 
 // Контейнер заголовка
 const HeaderContainer = () => {
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const openSettings = () => setIsSettingsOpen(true);
+  const closeSettings = () => setIsSettingsOpen(false);
   return ( 
     <header className="header container">
     <Link to="/">
@@ -36,9 +41,12 @@ const HeaderContainer = () => {
         <li><a href="#">Поделиться</a></li>
         <li><a href="download" onClick={(e) => { e.preventDefault(); handleDownload(); }}>Экспортировать</a></li>
         <li><a href="#">Вид</a></li>
-        <li><a href="#">Настройки</a></li>
+        <li><a href="settings" onClick={(e) => { e.preventDefault(); openSettings(); }}>Настройки</a></li>
       </ul>
     </nav>
+    <div>
+    {/* <Settings isOpen={isSettingsOpen} onClose={closeSettings} /> */}
+    </div>
     </header>
   );
 }
