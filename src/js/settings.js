@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import {clearWorkspace} from "./clear.js"
 import '../css/settings.css'; 
 export const Settings = ({ isOpen, onClose }) => {
   useEffect(() => {
@@ -14,7 +15,7 @@ export const Settings = ({ isOpen, onClose }) => {
     };
   }, [isOpen, onClose]);
   const handleClearCache = () => {
-    localStorage.removeItem("shapes-idef0");
+   clearWorkspace();
   };
 
   if (!isOpen) return null;
