@@ -210,7 +210,7 @@ export const WorkspaceContainer = () => {
   };
   
   const handleMouseDown = (index, e) => {
-    e.preventDefault();
+    //e.preventDefault();
 
     const shape = shapes[index];
     const offsetX = e.clientX - (shape.position.x + workspaceRef.current.getBoundingClientRect().left);

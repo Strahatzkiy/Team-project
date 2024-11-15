@@ -30,7 +30,7 @@
 .input-diagram {
     text-align: center;
     font-size: 40pt; 
-    user-select: all;
+    user-select: text;
 }
 
 /* Эффект переносимого объекта */

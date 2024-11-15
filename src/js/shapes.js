@@ -74,9 +74,10 @@ export const Rectangle = ({width, height, content, canDrag, canType, onTextChang
             className="input-diagram"
             style={{
               width: `${width}px`,
-              height: `${height}px`, }}
+              height: `${height}px`,
+             }}
             />
-          ) : (<span style={{textAlign: "center", fontSize: "40pt"}}>{text}</span>))
+          ) : (<span style={{textAlign: "center", fontSize: "40pt", userSelect: "none",}}>{text}</span>))
           }
       </div>
     );
