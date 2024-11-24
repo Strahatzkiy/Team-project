@@ -26,7 +26,7 @@ export const HeaderContainer = () => {
           <li><a href="#">Поделиться</a></li>
           <li><a href="download" onClick={(e) => { e.preventDefault(); handleDownload(); }}>Экспортировать</a></li>
           <li><a href="#">Вид</a></li>
-          <li><a href="settings" onClick={(e) => { e.preventDefault(); clearWorkspace(); }}>Настройки</a></li>
+          <li><a href="clear" onClick={(e) => { e.preventDefault(); clearWorkspace(); }}>Очистить кэш</a></li>
         </ul>
       </nav>
       <div>

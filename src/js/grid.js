@@ -11,13 +11,15 @@ export const Grid = ({ cellSize, windowSize }) => {
     gridLines.push(
       <line key={`v-${i}`} className="grid-line" x1={i} y1={0} x2={i} y2={windowSize.height} />
     );
+  }
+  for (let i = 0; i < windowSize.height; i+= cellSize) {
     gridLines.push(
       <line key={`h-${i}`} className="grid-line" x1={0} y1={i} x2={windowSize.width} y2={i} />
     );
   }
 
   return (
-    <svg id="grid-diagram-ignore" className="grid-diagram" width={windowSize.width} height={windowSize.height*0.8}>
+    <svg id="grid-diagram-ignore" className="grid-diagram" width={windowSize.width - 60} height={windowSize.height*0.8}>
       <g stroke="black" strokeWidth={1} opacity="10%">{gridLines}</g>
     </svg>
   );
