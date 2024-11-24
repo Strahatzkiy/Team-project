@@ -37,3 +37,44 @@
 .dragging {
     opacity: 0.5;
 }
+
+button {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background-color: white;
+    border: 1px solid black;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+button:hover {
+    background-color: #DDD; /* Цвет фона при наведении */
+}
+
+button:active {
+    background-color: #CCC; /* Цвет фона при нажатии */
+}
+
+.top-button {
+    top: -45px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.right-button {
+    top: 50%;
+    right: -45px;
+    transform: translateY(-50%);
+}
+
+.bottom-button {
+    bottom: -45px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.left-button {
+    top: 50%;
+    left: -45px;
+    transform: translateY(-50%);
+}

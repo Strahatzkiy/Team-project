@@ -82,6 +82,54 @@ export const Rectangle = ({width, height, content, canDrag, canType, onTextChang
       </div>
     );
   }
+
+  export const RectangleWithArrows = ({width, height, content, canDrag, canType, onTextChanged, addArrow, shapes}) => {
+    const [text, setText] = useState(content);
+
+    const addArrowToWorkspace = (direction) => {
+      const centerX = width / 2;
+      const centerY = height / 2;
+      let arrow;
+
+      switch (direction) {
+          case 'up':
+              arrow = { side: 'top' }; // Стрелка вверх
+              break;
+          case 'down':
+              arrow = { side: 'bottom' }; // Стрелка вниз
+              break;
+          case 'left':
+              arrow = { side: 'left' }; // Стрелка влево
+              break;
+          case 'right':
+              arrow = { side: 'right' }; // Стрелка вправо
+              break;
+          default:
+              return;
+      }
+
+      addArrow(arrow);
+  };
+
+    return (
+      <div>
+        <Rectangle
+          width={width}
+          height={height}
+          content={content}
+          canDrag={canDrag}
+          canType={canType}
+          onTextChanged={onTextChanged}
+        />
+        <div>
+          <button className="top-button" onClick={() => addArrowToWorkspace('up')}></button>
+          <button className="bottom-button" onClick={() => addArrowToWorkspace('down')}></button>
+          <button className="left-button" onClick={() => addArrowToWorkspace('left')}></button>
+          <button className="right-button" onClick={() => addArrowToWorkspace('right')}></button>
+        </div>
+      </div>
+    );
+}
   
 // Овал
 export const Oval = ({width, height, canDrag}) => {
