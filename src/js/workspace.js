@@ -1,4 +1,4 @@
-import { Rectangle, Oval, Arrow } from "./shapes.js";
+import { Rectangle, Oval, Arrow, RectangleWithArrows } from "./shapes.js";
 import { Grid } from "./grid.js";
 import { useState, useRef, useEffect } from "react";
 
@@ -12,43 +12,88 @@ export const WorkspaceContainer = () => {
   const workspaceRef = useRef(null);
   const cellSize = 10;
 
-      const arrowPosition = (params) => {
-        const { side, offsetX, offsetY, rectangle } = params;
-        switch (side) {
-          case "top":
-            params.x += rectangle.width / 2 + offsetX;
-            params.y -= 120;
-            params.y1 = 0;
-            params.y2 = 100;
-            break;
-          case "bottom":
-            params.x += rectangle.width / 2 + offsetX;
-            params.y += rectangle.height;
-            params.y1 = 120;
-            params.y2 = 20;
-            break;
-          case "left":
-            params.x -= 120;
-            params.y += rectangle.height / 2 + offsetY;
-            params.x1 = 0;
-            params.x2 = 100;
-            break;
-          case "right":
-            params.x += rectangle.width;
-            params.y += rectangle.height / 2 + offsetY;
-            params.x1 = 0;
-            params.x2 = 100;
-            break;
-        }
-        return (params);
-      }
+  const arrowPosition = (params) => {
+    const { side, offsetX, offsetY, rectangle } = params;
+    switch (side) {
+      case 'top':
+        params.x += offsetX;
+        params.y -= 120;
+        params.y1 = 0;
+        params.y2 = 100;
+        break;
+      case 'bottom':
+        params.x += offsetX;
+        params.y += rectangle.height;
+        params.y1 = 120;
+        params.y2 = 20;
+        break;
+      case 'left':
+        params.x -= 120;
+        params.y += offsetY;
+        params.x1 = 0;
+        params.x2 = 100;
+        break;
+      case 'right':
+        params.x += rectangle.width;
+        params.y += offsetY;
+        params.x1 = 0;
+        params.x2 = 100;
+        break;
+    }
+    return (params);
+  }
+
+  const createArrow = (side, offsetX, offsetY, rectangle) => {
+    let params = {
+      x: rectangle.position.x,
+      y: rectangle.position.y,
+      x1: 10,
+      y1: 10,
+      x2: 10,
+      y2: 10,
+      side,
+      offsetX,
+      offsetY,
+      rectangle
+    };
+    params = arrowPosition(params);
+    // Округление значений
+    params.x = Math.round(params.x / cellSize) * cellSize;
+    params.y = Math.round(params.y / cellSize) * cellSize;
+    params.x1 = Math.round(params.x1 / cellSize) * cellSize;
+    params.y1 = Math.round(params.y1 / cellSize) * cellSize;
+    params.x2 = Math.round(params.x2 / cellSize) * cellSize;
+    params.y2 = Math.round(params.y2 / cellSize) * cellSize;
+    return {
+      id: shapes.length,
+      type: "arrow",
+      position: {
+          x: params.x,
+          y: params.y,
+      },
+      x1: params.x1,
+      y1: params.y1,
+      x2: params.x2,
+      y2: params.y2,
+      side: params.side,
+      canDrag: false,
+    };
+  };
     
+    useEffect(() => {
+      return () => {};
+    }, [shapes]);
+
   useEffect(() => {
     const rect = workspaceRef.current.getBoundingClientRect();
 
     const savedShapes = localStorage.getItem("shapes-idef0");
     if (savedShapes) {
       setShapes(JSON.parse(savedShapes));
+      setWindowSize({
+          width: window.innerWidth,
+          height: window.innerHeight,
+      });
     }
 
     else {
@@ -65,61 +110,29 @@ export const WorkspaceContainer = () => {
         canType: true,
         text: "Диаграмма",
       };
-
-      const createArrow = (side, offsetX, offsetY, rectangle) => {
-        let params = {
-          x: rectangle.position.x,
-          y: rectangle.position.y,
-          x1: 10,
-          y1: 10,
-          x2: 10,
-          y2: 10,
-          side,
-          offsetX,
-          offsetY,
-          rectangle
-        };
-  
-        params = arrowPosition(params);
-
-        // Округление значений
-        params.x = Math.round(params.x / cellSize) * cellSize;
-        params.y = Math.round(params.y / cellSize) * cellSize;
-        params.x1 = Math.round(params.x1 / cellSize) * cellSize;
-        params.y1 = Math.round(params.y1 / cellSize) * cellSize;
-        params.x2 = Math.round(params.x2 / cellSize) * cellSize;
-        params.y2 = Math.round(params.y2 / cellSize) * cellSize;
-        return {
-          type: "arrow",
-          position: {
-              x: params.x,
-              y: params.y,
-          },
-          x1: params.x1,
-          y1: params.y1,
-          x2: params.x2,
-          y2: params.y2,
-          side: params.side,
-          canDrag: false,
-        };
-  
-      };
-
+      /*
       const initialArrowInput = createArrow("left", 0, 0, initialRectangle);
       const initialArrowOutput = createArrow("right", 0, 0, initialRectangle);
       const initialArrowMechanism = createArrow("bottom", 0, 0, initialRectangle);
       const initialArrowManagement = createArrow("top", 0, 0, initialRectangle);
-
-      setShapes([initialRectangle, initialArrowInput, initialArrowOutput, initialArrowMechanism, initialArrowManagement])
+      */
+      setShapes([initialRectangle/*, initialArrowInput, initialArrowOutput, initialArrowMechanism, initialArrowManagement*/])
     }
-  }, [])
+  }, []);
+
+  const handleResize = () => {
+      setWindowSize({
+          width: window.innerWidth,
+          height: window.innerHeight,
+      });
+  };
 
   useEffect(() => {
-    const handleResize = () => {
-      setWindowSize({
-        width: window.innerWidth,
-        height: window.innerHeight,
-      });
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
       const rect = workspaceRef.current.getBoundingClientRect();
       setShapes((prevShapes) => {
         return prevShapes.map((shape) => {
@@ -134,21 +147,38 @@ export const WorkspaceContainer = () => {
               }
             }
           } else if (shape.type === "arrow") {
+            const arrowsOnSide = prevShapes.filter(s => s.type === 'arrow' && s.side === shape.side);
+            const index = arrowsOnSide.findIndex(s => s.id === shape.id);
             const rectangle = prevShapes.find((s) => s.id === "main-rectangle");
             if (rectangle) {
               let params = {
-                x: Math.round((rect.width - rectangle.width) / (2 * cellSize)) * cellSize,
-                y: Math.round((rect.height - rectangle.height) / (2 * cellSize)) * cellSize,
-                x1: 10,
-                y1: 10,
-                x2: 10,
-                y2: 10,
-                side: shape.side,
-                offsetX: 0,
-                offsetY: 0,
-                rectangle
+                  x: rectangle.position.x,
+                  y: rectangle.position.y,
+                  x1: 10,
+                  y1: 10,
+                  x2: 10,
+                  y2: 10,
+                  side: shape.side,
+                  offsetX: 0,
+                  offsetY: 0,
+                  rectangle,
               };
+  
+              switch (shape.side) {
+                  case "left":
+                  case "right":
+                    params.offsetY = rectangle.height / (arrowsOnSide.length + 1) * (index + 1);
+                    break;
+                  case "top":
+                  case "bottom":
+                    params.offsetX = rectangle.width / (arrowsOnSide.length + 1) * (index + 1);
+                    break;
+                  }
+  
               params = arrowPosition(params);
+
+              params.x = Math.round(params.x / cellSize) * cellSize;
+              params.y = Math.round(params.y / cellSize) * cellSize;
               return {
                 ...shape,
                 position: {
@@ -165,13 +195,7 @@ export const WorkspaceContainer = () => {
           return shape;
         });
       });
-      console.log(rect);
-    };
-    
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-  
+  }, [windowSize]);
 
   const handleDrop = (e) => {
     e.preventDefault();
@@ -262,7 +286,70 @@ export const WorkspaceContainer = () => {
       localStorage.setItem("shapes-idef0", JSON.stringify(updatedShapes));
       return updatedShapes;
     });
-  };  
+  }; 
+
+  const addArrowToShapes = (arrow) => {
+    const mainRect = shapes.find((s) => s.id === "main-rectangle");
+    const newArrow = createArrow(arrow.side, 0, 0, mainRect);
+    const updatedShapes = [...shapes, newArrow];
+    let [il, ir, it, ib] = [0,0,0,0]; // Получаем индекс текущей стрелки
+
+    // Обновляем позиции стрелок
+    updatedShapes.forEach((shape) => {
+        if (shape.type === "arrow") {
+            const arrowsOnSide = updatedShapes.filter(s => s.type === 'arrow' && s.side === shape.side);
+            console.log(arrowsOnSide);
+
+            let params = {
+                x: mainRect.position.x,
+                y: mainRect.position.y,
+                x1: 10,
+                y1: 10,
+                x2: 10,
+                y2: 10,
+                side: shape.side,
+                offsetX: 0,
+                offsetY: 0,
+                rectangle: mainRect,
+            };
+
+            switch (shape.side) {
+                case "left":
+                  params.offsetY = mainRect.height / (arrowsOnSide.length + 1) * (il + 1);
+                  il++;
+                  break;
+                case "right":
+                  params.offsetY = mainRect.height / (arrowsOnSide.length + 1) * (ir + 1);
+                  ir++;
+                  break;
+                case "top":
+                  params.offsetX = mainRect.width / (arrowsOnSide.length + 1) * (it + 1);
+                  it++;
+                  break;
+                case "bottom":
+                  params.offsetX = mainRect.width / (arrowsOnSide.length + 1) * (ib + 1);
+                  ib++;
+                  break;
+                }
+
+            params = arrowPosition(params);
+
+            params.x = Math.round(params.x / cellSize) * cellSize;
+            params.y = Math.round(params.y / cellSize) * cellSize;
+
+            shape.position.x = params.x;
+            shape.position.y = params.y;
+            shape.x1 = params.x1;
+            shape.x2 = params.x2;
+            shape.y1 = params.y1;
+            shape.y2 = params.y2;
+        }
+    });
+
+    localStorage.setItem('shapes-idef0', JSON.stringify(updatedShapes));
+
+    setShapes(updatedShapes);
+};
   
   return (
     <div ref={workspaceRef}
@@ -281,13 +368,15 @@ export const WorkspaceContainer = () => {
         style={{ position: 'absolute', left: shape.position.x, top: shape.position.y }}
         >
           {shape.type === "rectangle" ? 
-          <Rectangle 
+          <RectangleWithArrows
             draggable={false} 
             width={shape.width} 
             height={shape.height} 
             content={shape.text} 
             canDrag={shape.canDrag} 
             canType={shape.canType}
+            addArrow={addArrowToShapes}
+            shapes={shapes}
             onTextChanged={(newText) => updateShapeText(index, newText)}/> : 
           (shape.type === "oval" ? <Oval draggable={false} /> : 
           (shape.type === "arrow" ? <Arrow draggable={false} 
