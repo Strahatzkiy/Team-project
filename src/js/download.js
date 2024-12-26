@@ -4,15 +4,20 @@ import { saveAs } from "file-saver";
 
 export const handleDownload = () => {
     const workspace = document.getElementById("workspace");
-    const ignoreElements = document.getElementById("grid-diagram-ignore");
-    const originalOpacity = ignoreElements.style.opacity;
-    ignoreElements.style.opacity = '0';
+    const ignoreElements = document.getElementsByClassName("diagram-ignore");
+    var originalOpacity = new Array(ignoreElements.length);
+    for (let i = 0; i < ignoreElements.length; i++) {
+      originalOpacity[i] = ignoreElements[i].style.opacity;
+      ignoreElements[i].style.opacity = '0';
+    }
     html2canvas(workspace).then((canvas) => {
       canvas.toBlob((blob) => {
         saveAs(blob, "diagram.png");
       });
     });
-    ignoreElements.style.opacity = originalOpacity;
+    for (let i = 0; i < ignoreElements.length; i++) {
+      ignoreElements[i].style.opacity = originalOpacity[i];
+    }
   };
 
   export default handleDownload;

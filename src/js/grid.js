@@ -19,7 +19,7 @@ export const Grid = ({ cellSize, windowSize }) => {
   }
 
   return (
-    <svg id="grid-diagram-ignore" className="grid-diagram" width={windowSize.width - 60} height={windowSize.height*0.8}>
+    <svg className="grid-diagram diagram-ignore" width={windowSize.width - 60} height={windowSize.height*0.8}>
       <g stroke="black" strokeWidth={1} opacity="10%">{gridLines}</g>
     </svg>
   );
