@@ -11,7 +11,7 @@ h1 {
 
 .menu {
 	display: grid; /* Используем CSS Grid */
-	grid-template-columns: repeat(2, 1fr); /* Два столбца */
+	grid-template-columns: repeat(1, 1fr); /* Один столбец */
 	justify-items: center; /* Центрируем элементы по горизонтали */
 	gap: 20px; /* Отступы между изображениями */
 	max-width: 800px; /* Максимальная ширина контейнера */
@@ -20,8 +20,8 @@ h1 {
 
 .menu-item {
 	width: 100%; /* Ширина элемента 100% от ячейки */
-	max-width: 400px; /* Максимальная ширина для изображений */
-	height: 200px;
+	max-width: 600px; /* Максимальная ширина для изображений */
+	height: 300px;
 	overflow: hidden;
 	border: 2px solid #ccc;
 	border-radius: 8px;

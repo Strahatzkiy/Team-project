@@ -1,4 +1,3 @@
-// src/js/grid.js
 import React, { useEffect } from 'react';
 
 // Сетка

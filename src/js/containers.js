@@ -1,7 +1,6 @@
-import { Rectangle, Oval, Arrow } from "./shapes.js";
+import { Rectangle, Arrow } from "./shapes.js";
 import { handleDownload } from "./download.js";
-import { clearWorkspace } from "./clear.js";
-import { Settings } from "./settings.js";
+import { clearWorkspace } from "./workspace.js";
 import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import lupa from "../image/lupa.png";
@@ -51,7 +50,6 @@ export const HeaderContainer = () => {
   export const ToolbarContainer = ({onDrop}) => {
     const itemsClass1 = [
     { component: <Rectangle canDrag={false} width={150} height={100} />, type: "rectangle" },
-    { component: <Oval canDrag={false} width={150} height={100} />, type: "oval"}, 
     { component: <Arrow x1={0} x2={100} y1={10} y2={10} canDrag={true}/>, type: "arrow"}]
   
     return (
