@@ -11,6 +11,8 @@ export const WorkspaceContainer = () => {
   });
   const workspaceRef = useRef(null);
   const cellSize = 10;
+  let resizeTimeout;
+  let delayTimeout;
 
   const arrowPosition = (params) => {
     const { side, offsetX, offsetY, rectangle } = params;
@@ -28,20 +30,23 @@ export const WorkspaceContainer = () => {
         params.y2 = 20;
         break;
       case 'left':
-        params.x -= 120;
+        params.x -= 220;
         params.y += offsetY;
         params.x1 = 0;
-        params.x2 = 100;
+        params.x2 = 200;
         break;
       case 'right':
         params.x += rectangle.width;
         params.y += offsetY;
         params.x1 = 0;
-        params.x2 = 100;
+        params.x2 = 200;
         break;
     }
     return (params);
   }
+
+  let arrowIdCounter = localStorage.getItem('arrowIdCounter') ? 
+                     parseInt(localStorage.getItem('arrowIdCounter')) : 0;
 
   const createArrow = (side, offsetX, offsetY, rectangle) => {
     let params = {
@@ -64,8 +69,8 @@ export const WorkspaceContainer = () => {
     params.y1 = Math.round(params.y1 / cellSize) * cellSize;
     params.x2 = Math.round(params.x2 / cellSize) * cellSize;
     params.y2 = Math.round(params.y2 / cellSize) * cellSize;
-    return {
-      id: shapes.length,
+    const arrow = {
+      id: `arrow-${arrowIdCounter++}`, // Используем счетчик
       type: "arrow",
       position: {
           x: params.x,
@@ -77,12 +82,19 @@ export const WorkspaceContainer = () => {
       y2: params.y2,
       side: params.side,
       canDrag: false,
-    };
+      canType: true,
+  };
+
+  // Сохраняем новое значение счетчика в localStorage
+  localStorage.setItem('arrowIdCounter', arrowIdCounter);
+
+  return arrow;
+
   };
     
-    useEffect(() => {
-      return () => {};
-    }, [shapes]);
+  useEffect(() => {
+    return () => {};
+  }, [shapes]);
 
   useEffect(() => {
     const rect = workspaceRef.current.getBoundingClientRect();
@@ -120,11 +132,26 @@ export const WorkspaceContainer = () => {
     }
   }, []);
 
+  const updateWindowSize = () => {
+    setWindowSize({
+      width: window.innerWidth,
+      height: window.innerHeight,
+    });
+  };
+
   const handleResize = () => {
-      setWindowSize({
-          width: window.innerWidth,
-          height: window.innerHeight,
+    if (!resizeTimeout) {
+      resizeTimeout = requestAnimationFrame(() => {
+        updateWindowSize();
+        
+        // Установите задержку для второго обновления
+        delayTimeout = setTimeout(() => {
+          updateWindowSize();
+        }, 10); // Задержка в 10 мс (можно изменить по необходимости)
+
+        resizeTimeout = null; // Сброс таймера
       });
+    }
   };
 
   useEffect(() => {
@@ -290,67 +317,152 @@ export const WorkspaceContainer = () => {
 
   const addArrowToShapes = (arrow) => {
     const mainRect = shapes.find((s) => s.id === "main-rectangle");
-    const newArrow = createArrow(arrow.side, 0, 0, mainRect);
-    const updatedShapes = [...shapes, newArrow];
-    let [il, ir, it, ib] = [0,0,0,0]; // Получаем индекс текущей стрелки
+    const arrowsOnSide = shapes.filter((s) => s.type === "arrow" && s.side === arrow.side).length;
+    if (arrowsOnSide < 14) {
+        const newArrow = createArrow(arrow.side, 0, 0, mainRect);
+        const updatedShapes = [...shapes, newArrow];
+        let [il, ir, it, ib] = [0,0,0,0]; // Получаем индекс текущей стрелки
 
-    // Обновляем позиции стрелок
-    updatedShapes.forEach((shape) => {
+        // Обновляем позиции стрелок
+        updatedShapes.forEach((shape) => {
+            if (shape.type === "arrow") {
+                const arrowsOnSide = updatedShapes.filter(s => s.type === 'arrow' && s.side === shape.side);
+
+                let params = {
+                    x: mainRect.position.x,
+                    y: mainRect.position.y,
+                    x1: 10,
+                    y1: 10,
+                    x2: 10,
+                    y2: 10,
+                    side: shape.side,
+                    offsetX: 0,
+                    offsetY: 0,
+                    rectangle: mainRect,
+                };
+
+                switch (shape.side) {
+                    case "left":
+                      params.offsetY = mainRect.height / (arrowsOnSide.length + 1) * (il + 1);
+                      il++;
+                      break;
+                    case "right":
+                      params.offsetY = mainRect.height / (arrowsOnSide.length + 1) * (ir + 1);
+                      ir++;
+                      break;
+                    case "top":
+                      params.offsetX = mainRect.width / (arrowsOnSide.length + 1) * (it + 1);
+                      it++;
+                      break;
+                    case "bottom":
+                      params.offsetX = mainRect.width / (arrowsOnSide.length + 1) * (ib + 1);
+                      ib++;
+                      break;
+                    }
+
+                params = arrowPosition(params);
+
+                params.x = Math.round(params.x / cellSize) * cellSize;
+                params.y = Math.round(params.y / cellSize) * cellSize;
+
+                shape.position.x = params.x;
+                shape.position.y = params.y;
+                shape.x1 = params.x1;
+                shape.x2 = params.x2;
+                shape.y1 = params.y1;
+                shape.y2 = params.y2;
+            }
+        });
+
+        localStorage.setItem('shapes-idef0', JSON.stringify(updatedShapes));
+
+        setShapes(updatedShapes);
+    }
+  };
+
+  const updateArrowSpanTexts = (shapes) => {
+    shapes.forEach((shape) => {
         if (shape.type === "arrow") {
-            const arrowsOnSide = updatedShapes.filter(s => s.type === 'arrow' && s.side === shape.side);
-            console.log(arrowsOnSide);
+          shape.text = `Стрелка ${shape.id}`;
 
-            let params = {
-                x: mainRect.position.x,
-                y: mainRect.position.y,
-                x1: 10,
-                y1: 10,
-                x2: 10,
-                y2: 10,
-                side: shape.side,
-                offsetX: 0,
-                offsetY: 0,
-                rectangle: mainRect,
-            };
-
-            switch (shape.side) {
-                case "left":
-                  params.offsetY = mainRect.height / (arrowsOnSide.length + 1) * (il + 1);
-                  il++;
-                  break;
-                case "right":
-                  params.offsetY = mainRect.height / (arrowsOnSide.length + 1) * (ir + 1);
-                  ir++;
-                  break;
-                case "top":
-                  params.offsetX = mainRect.width / (arrowsOnSide.length + 1) * (it + 1);
-                  it++;
-                  break;
-                case "bottom":
-                  params.offsetX = mainRect.width / (arrowsOnSide.length + 1) * (ib + 1);
-                  ib++;
-                  break;
-                }
-
-            params = arrowPosition(params);
-
-            params.x = Math.round(params.x / cellSize) * cellSize;
-            params.y = Math.round(params.y / cellSize) * cellSize;
-
-            shape.position.x = params.x;
-            shape.position.y = params.y;
-            shape.x1 = params.x1;
-            shape.x2 = params.x2;
-            shape.y1 = params.y1;
-            shape.y2 = params.y2;
+          // Обновление текста стрелки
+          const spanElement = document.getElementById(`arrow-span-${shape.id}`);
+          if (spanElement) {
+            setTimeout(() => {
+              spanElement.textContent = shape.text;
+              const arrowThis = document.getElementById(shape.id);
+              arrowThis.text = shape.text;
+            }, 10); // Обновление текста в span
+          }
         }
     });
+  };
 
-    localStorage.setItem('shapes-idef0', JSON.stringify(updatedShapes));
+  const removeArrowFromShapes = (arrowId) => {
+    const mainRect = shapes.find((s) => s.id === "main-rectangle");
+    const arrowToRemove = shapes.find((s) => s.id === arrowId);
 
-    setShapes(updatedShapes);
-};
-  
+    if (arrowToRemove) {
+        const updatedShapes = shapes.filter((s) => s.id !== arrowId);
+
+        // Обновляем позиции оставшихся стрелок и их текст
+        let [il, ir, it, ib] = [0, 0, 0, 0]; // Индексы для каждой стороны
+        updatedShapes.forEach((shape) => {
+            if (shape.type === "arrow") {
+                const arrowsOnSide = updatedShapes.filter(s => s.type === 'arrow' && s.side === shape.side);
+                let params = {
+                    x: mainRect.position.x,
+                    y: mainRect.position.y,
+                    x1: 10,
+                    y1: 10,
+                    x2: 10,
+                    y2: 10,
+                    side: shape.side,
+                    offsetX: 0,
+                    offsetY: 0,
+                    rectangle: mainRect,
+                };
+
+                switch (shape.side) {
+                    case "left":
+                        params.offsetY = mainRect.height / (arrowsOnSide.length + 1) * (il + 1);
+                        il++;
+                        break;
+                    case "right":
+                        params.offsetY = mainRect.height / (arrowsOnSide.length + 1) * (ir + 1);
+                        ir++;
+                        break;
+                    case "top":
+                        params.offsetX = mainRect.width / (arrowsOnSide.length + 1) * (it + 1);
+                        it++;
+                        break;
+                    case "bottom":
+                        params.offsetX = mainRect.width / (arrowsOnSide.length + 1) * (ib + 1);
+                        ib++;
+                        break;
+                }
+
+                params = arrowPosition(params);
+                params.x = Math.round(params.x / cellSize) * cellSize;
+                params.y = Math.round(params.y / cellSize) * cellSize;
+
+                shape.position.x = params.x;
+                shape.position.y = params.y;
+                shape.x1 = params.x1;
+                shape.x2 = params.x2;
+                shape.y1 = params.y1;
+                shape.y2 = params.y2;
+            }
+        });
+        updateArrowSpanTexts(updatedShapes);
+
+        localStorage.setItem('shapes-idef0', JSON.stringify(updatedShapes));
+        setShapes(updatedShapes);
+    }
+    
+    window.location.reload();
+  };
+
   return (
     <div ref={workspaceRef}
       onDrop={handleDrop}
@@ -380,10 +492,16 @@ export const WorkspaceContainer = () => {
             onTextChanged={(newText) => updateShapeText(index, newText)}/> : 
           (shape.type === "oval" ? <Oval draggable={false} /> : 
           (shape.type === "arrow" ? <Arrow draggable={false} 
+          id={shape.id}
           x1={shape.x1} 
           y1={shape.y1}
           x2={shape.x2}
           y2={shape.y2}
+          side={shape.side}
+          initialText={shape.text}
+          canType={shape.canType}
+          deleteArrow={removeArrowFromShapes}
+          onTextChanged={(newText) => updateShapeText(index, newText)}
           /> : null))}
         </div>) : null
       ))}
