@@ -5,7 +5,7 @@ import AutowidthInput from "react-autowidth-input";
 import invariant from "tiny-invariant";
 
 // Прямоугольник
-export const Rectangle = ({ width, height, content, canDrag, canType, onTextChanged, onDoubleClick, onBlur }) => {
+export const Rectangle = ({ id, width, height, content, canDrag, canType, onTextChanged, onDoubleClick, onBlur, isBig }) => {
     const ref = useRef(null);
     const [isDragging, setIsDragging] = useState(false);
     const [text, setText] = useState(content);
@@ -53,7 +53,7 @@ export const Rectangle = ({ width, height, content, canDrag, canType, onTextChan
     return (
         <div
             ref={ref}
-            id={"shape"}
+            id={id}
             className={`rectangle ${isDragging ? "dragging" : ""}`} 
             style={{
                 width: `${width}px`,
@@ -64,7 +64,7 @@ export const Rectangle = ({ width, height, content, canDrag, canType, onTextChan
             onDoubleClick={handleDoubleClick} 
         >
             {
-                (isEditing && canType ? 
+                (isBig ? (isEditing && canType ?
                     (<textarea 
                         defaultValue={text}
                         onBlur={handleBlur}
@@ -87,6 +87,29 @@ export const Rectangle = ({ width, height, content, canDrag, canType, onTextChan
                         maxHeight: `${height}px`, // Ограничивает высоту
                         overflow: 'hidden', // Скрывает переполнение
                     }}>{text}</span>)
+                ) : (isEditing && canType ?
+                  (<textarea 
+                      defaultValue={text}
+                      onBlur={handleBlur}
+                      onKeyDown={handleKeyDown}
+                      autoFocus 
+                      className="input-diagram small"
+                      style={{
+                          width: `${width}px`,
+                          height: `${height}px`,
+                          resize: "none", // Запрет изменения размера
+                      }}
+                  />) : 
+                  (<span style={{
+                      textAlign: "center",
+                      fontSize: "16pt",
+                      userSelect: "none",
+                      whiteSpace: "pre-wrap", // Сохраняет переносы строк
+                      overflowWrap: "break-word", // Переносит длинные слова
+                      display: 'block', // Заставляет span вести себя как блок
+                      maxHeight: `${height}px`, // Ограничивает высоту
+                      overflow: 'hidden', // Скрывает переполнение
+                  }}>{text}</span>))
                 )
             }
         </div>
@@ -95,10 +118,17 @@ export const Rectangle = ({ width, height, content, canDrag, canType, onTextChan
 
 
 
-  export const RectangleWithArrows = ({width, height, content, canDrag, canType, onTextChanged, addArrow, shapes}) => {
+  export const RectangleWithArrows = ({id, width, height, content, canDrag, canType, onTextChanged, addArrow, addRectangle, isBig}) => {
+    const ref = useRef(null);
     const [text, setText] = useState(content);
     const [showArrows, setShowArrows] = useState(true); // Состояние для управления видимостью кнопок
 
+    const addRectangleToWorkspace = () => { 
+      console.log(id);
+        let rectangleId = parseInt(id.match(/\d+/)[0]) + 1;
+        console.log(rectangleId);
+        addRectangle(rectangleId);
+  };
 
     const addArrowToWorkspace = (direction) => {
       const centerX = width / 2;
@@ -120,7 +150,7 @@ export const Rectangle = ({ width, height, content, canDrag, canType, onTextChan
               break;
           default:
               return;
-      }
+      } 
 
       addArrow(arrow);
   };
@@ -136,24 +166,29 @@ export const Rectangle = ({ width, height, content, canDrag, canType, onTextChan
     return (
       <div>
         <Rectangle
+          ref={ref}
+          id={id}
           width={width}
           height={height}
           content={content}
           canDrag={canDrag}
           canType={canType}
           onTextChanged={onTextChanged}
+          isBig={isBig}
           onDoubleClick={handleDoubleClick}
           onBlur={handleBlur}
         />
         <div>
-        {showArrows && (
+        {showArrows && isBig ? (
                 <div>
-                    <button className="top-button diagram-ignore add-arrow" onClick={() => addArrowToWorkspace('up')}></button>
-                    <button className="bottom-button diagram-ignore add-arrow" onClick={() => addArrowToWorkspace('down')}></button>
-                    <button className="left-button diagram-ignore add-arrow" onClick={() => addArrowToWorkspace('left')}></button>
-                    <button className="right-button diagram-ignore add-arrow" onClick={() => addArrowToWorkspace('right')}></button>
-                </div>
-            )}
+                  <button className="top-button diagram-ignore add-arrow" onClick={() => addArrowToWorkspace('up')}></button>
+                  <button className="bottom-button diagram-ignore add-arrow" onClick={() => addArrowToWorkspace('down')}></button>
+                  <button className="left-button diagram-ignore add-arrow" onClick={() => addArrowToWorkspace('left')}></button>
+                  <button className="right-button diagram-ignore add-arrow" onClick={() => addArrowToWorkspace('right')}></button>
+                </div> ) : (<div>
+                  <button className="right-button-small diagram-ignore add-arrow" onClick={() => addRectangleToWorkspace('right')}></button>
+            </div>)
+            }
 
         </div>
       </div>

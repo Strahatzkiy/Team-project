@@ -13,6 +13,7 @@ export const HeaderContainer = () => {
     /*const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const openSettings = () => setIsSettingsOpen(true);
     const closeSettings = () => setIsSettingsOpen(false);*/
+    const currentPath = window.location.pathname;
     return ( 
       <header className="header container">
       <Link to="/">
@@ -20,7 +21,10 @@ export const HeaderContainer = () => {
       </Link>
       <nav>
         <ul>
-          <li><a href="idef0/a0">Декомпозировать</a></li>
+          {(currentPath === "/diagram/idef0") ?
+          <li><a href="/diagram/idef0/a0">Декомпозировать</a></li> :
+          (currentPath === "/diagram/idef0/a0") ?
+          <li><a href="/diagram/idef0">Вернуться на уровень выше</a></li> : null}
           { /*<li><a href="#">Имя файла</a></li>
           <li><a href="#">Файл</a></li>
           <li><a href="#">Вид</a></li>
