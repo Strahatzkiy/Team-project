@@ -1,90 +1,104 @@
 import "../css/shapes.css"
 import { useEffect, useState, useRef } from "react";
 import { draggable } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
+import AutowidthInput from "react-autowidth-input";
 import invariant from "tiny-invariant";
 
 // Прямоугольник
-export const Rectangle = ({width, height, content, canDrag, canType, onTextChanged}) => {
-    // Сохраняем объект в ref
+export const Rectangle = ({ width, height, content, canDrag, canType, onTextChanged, onDoubleClick, onBlur }) => {
     const ref = useRef(null);
-    // Состояние переноса прямоугольника
     const [isDragging, setIsDragging] = useState(false);
-    // Состояние для текста
     const [text, setText] = useState(content);
-    // Состояние редактирования
     const [isEditing, setIsEditing] = useState(false);
-  
-    // Эффект при переносе прямоугольника
+
     useEffect(() => {
-      const rectE1 = ref.current;
-      invariant(rectE1);
-      if (canDrag) {
-        return draggable({
-          element: rectE1,
-          onDragStart: () => setIsDragging(true),
-          onDrop: () => setIsDragging(false),
-        });
-      }
+        const rectE1 = ref.current;
+        invariant(rectE1);
+        if (canDrag) {
+            return draggable({
+                element: rectE1,
+                onDragStart: () => setIsDragging(true),
+                onDrop: () => setIsDragging(false),
+            });
+        }
     }, [canDrag]);
 
     const handleDoubleClick = () => {
-      if (canType) {
-        setIsEditing(true);
-      }
+        if (canType) {
+            setIsEditing(true);
+        }
+        onDoubleClick(); 
     }
 
     const handleBlur = (e) => {
-      const newText = e.target.value || "";
-      setText(newText);
-      onTextChanged(newText);
-      setIsEditing(false);
-    }
-
-    const handleKeyDown = (e) => {
-      if (e.key === "Enter") {
         const newText = e.target.value || "";
         setText(newText);
         onTextChanged(newText);
         setIsEditing(false);
-      }
-      if (e.key === "Escape") {
-        setIsEditing(false);
-      }
+        onBlur(); 
     }
-  
-    return (
-      <div
-        ref={ref}
-        id={"shape"}
-        className={`rectangle ${isDragging ? "dragging" : ""}`} 
-        style={{
-        width: `${width}px`,
-        height: `${height}px`}
+
+    const handleKeyDown = (e) => {
+        if (e.key === "Enter" && !e.shiftKey) {
+            const newText = e.target.value || "";
+            setText(newText);
+            onTextChanged(newText);
+            setIsEditing(false);
         }
-        onDoubleClick={handleDoubleClick} 
-      >
-        {
-        (isEditing && canType ? 
-          (<input 
-            type="text" 
-            defaultValue={text}
-            onBlur={handleBlur}
-            onKeyDown={handleKeyDown}
-            autoFocus 
-            className="input-diagram"
+        if (e.key === "Escape") {
+            setIsEditing(false);
+        }
+    }
+
+    return (
+        <div
+            ref={ref}
+            id={"shape"}
+            className={`rectangle ${isDragging ? "dragging" : ""}`} 
             style={{
-              width: `${width}px`,
-              height: `${height}px`,
-             }}
-            />
-          ) : (<span style={{textAlign: "center", fontSize: "40pt", userSelect: "none",}}>{text}</span>))
-          }
-      </div>
+                width: `${width}px`,
+                height: `${height}px`,
+                overflow: 'hidden', // Скрыть переполнение
+                position: 'relative', // Для абсолютного позиционирования
+            }}
+            onDoubleClick={handleDoubleClick} 
+        >
+            {
+                (isEditing && canType ? 
+                    (<textarea 
+                        defaultValue={text}
+                        onBlur={handleBlur}
+                        onKeyDown={handleKeyDown}
+                        autoFocus 
+                        className="input-diagram"
+                        style={{
+                            width: `${width}px`,
+                            height: `${height}px`,
+                            resize: "none", // Запрет изменения размера
+                        }}
+                    />) : 
+                    (<span style={{
+                        textAlign: "center",
+                        fontSize: "40pt",
+                        userSelect: "none",
+                        whiteSpace: "pre-wrap", // Сохраняет переносы строк
+                        overflowWrap: "break-word", // Переносит длинные слова
+                        display: 'block', // Заставляет span вести себя как блок
+                        maxHeight: `${height}px`, // Ограничивает высоту
+                        overflow: 'hidden', // Скрывает переполнение
+                    }}>{text}</span>)
+                )
+            }
+        </div>
     );
   }
 
+
+
   export const RectangleWithArrows = ({width, height, content, canDrag, canType, onTextChanged, addArrow, shapes}) => {
     const [text, setText] = useState(content);
+    const [showArrows, setShowArrows] = useState(true); // Состояние для управления видимостью кнопок
+
 
     const addArrowToWorkspace = (direction) => {
       const centerX = width / 2;
@@ -111,6 +125,14 @@ export const Rectangle = ({width, height, content, canDrag, canType, onTextChang
       addArrow(arrow);
   };
 
+  const handleDoubleClick = () => {
+    setShowArrows(false); // Скрыть кнопки при двойном щелчке
+  };
+  
+  const handleBlur = () => {
+    setShowArrows(true); // Показать кнопки при уводе фокуса
+  };
+
     return (
       <div>
         <Rectangle
@@ -120,12 +142,19 @@ export const Rectangle = ({width, height, content, canDrag, canType, onTextChang
           canDrag={canDrag}
           canType={canType}
           onTextChanged={onTextChanged}
+          onDoubleClick={handleDoubleClick}
+          onBlur={handleBlur}
         />
         <div>
-          <button className="top-button" onClick={() => addArrowToWorkspace('up')}></button>
-          <button className="bottom-button" onClick={() => addArrowToWorkspace('down')}></button>
-          <button className="left-button" onClick={() => addArrowToWorkspace('left')}></button>
-          <button className="right-button" onClick={() => addArrowToWorkspace('right')}></button>
+        {showArrows && (
+                <div>
+                    <button className="top-button diagram-ignore add-arrow" onClick={() => addArrowToWorkspace('up')}></button>
+                    <button className="bottom-button diagram-ignore add-arrow" onClick={() => addArrowToWorkspace('down')}></button>
+                    <button className="left-button diagram-ignore add-arrow" onClick={() => addArrowToWorkspace('left')}></button>
+                    <button className="right-button diagram-ignore add-arrow" onClick={() => addArrowToWorkspace('right')}></button>
+                </div>
+            )}
+
         </div>
       </div>
     );
@@ -161,33 +190,74 @@ export const Oval = ({width, height, canDrag}) => {
 }
 
 // Стрелка
-export const Arrow = ({x1, y1, x2, y2, canDrag}) => {
-  // Сохраняем объект в ref
-    const ref = useRef(null);
-    // Состояние переноса стрелки
-    const [isDragging, setIsDragging] = useState(false);
+export const Arrow = ({id, x1, y1, x2, y2, canDrag, initialText, side, canType, onTextChanged, deleteArrow}) => {
+  const ref = useRef(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [text, setText] = useState(initialText);
+  const [isEditing, setIsEditing] = useState(false);
 
-    // Эффект при переносе стрелки
-    useEffect(() => {
-      const arrowE1 = ref.current;
-      invariant(arrowE1);
-      if (canDrag) {
-        return draggable({
-          element: arrowE1,
-          onDragStart: () => setIsDragging(true),
-          onDrop: () => setIsDragging(false),
-        });
-      }
-    });
+  useEffect(() => {
+    const arrowE1 = ref.current;
+    invariant(arrowE1);
+    if (canDrag) {
+      return draggable({
+        element: arrowE1,
+        onDragStart: () => setIsDragging(true),
+        onDrop: () => setIsDragging(false),
+      });
+    }
+  });
 
-    return (
-      <svg width={Math.abs(x2-x1)+20} height={Math.abs(y2-y1)+20} style={{position: "absolute", x: 0, y: 0}}>
+  const updateDiagram = () => {
+    window.dispatchEvent(new Event('resize'));
+  };
+
+  const deleteArrowFromWorkspace = (e) => {
+    setIsEditing(false);
+    deleteArrow(id); // Убедитесь, что передаете правильный id
+    setTimeout(() => 
+    updateDiagram(), 10)
+  }
+
+  const handleDoubleClick = () => {
+    if (canType) {
+      setIsEditing(true);
+    }
+  }
+
+  const handleChange = (e) => { 
+    const newText = e.target.value;
+    setText(newText);
+  }
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      onTextChanged(text); // Сохраняем текст при нажатии Enter
+      setIsEditing(false);
+    }
+    if (e.key === "Escape") {
+      setIsEditing(false);
+    }
+  }
+  
+  const handleBlur = (e) => {
+    if (e.relatedTarget && e.relatedTarget.classList.contains('arrow-delete')) {
+      return;
+    }
+    setIsEditing(false);
+  }
+
+
+  return (
+    <div className="arrow-container" onDoubleClick={handleDoubleClick}>
+      <svg width={Math.abs(x2-x1)+20} height={Math.abs(y2-y1)+20} style={{position: "absolute", x: 20, y: 20}}>
         <defs>
           <marker id="arrow" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
             <polygon points="0 0, 10 3.5, 0 7" fill="black" />
           </marker>
         </defs>
         <line ref={ref}
+          id={id}
           x1={x1}
           y1={y1}
           x2={x2}
@@ -196,5 +266,29 @@ export const Arrow = ({x1, y1, x2, y2, canDrag}) => {
           className={`arrow${isDragging ? " dragging" : ""}`}
         />
       </svg>
-    );
+      {
+        (isEditing && canType ? 
+          (<div>
+            <AutowidthInput 
+              type="text" 
+              value={text}
+              onKeyDown={handleKeyDown}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              autoFocus 
+              className={`arrow-input ${side}`}
+              style={{textAlign: "left", fontSize: "14pt", userSelect: "none"}}
+            />
+            <button className={`arrow-delete ${side}`} onClick={deleteArrowFromWorkspace}>
+              Удалить
+            </button>
+          </div>
+          ) : (
+          <span id={`arrow-span-${id}`} className={`arrow-span ${side}`} style={{userSelect: "none", }}>
+            {text}
+          </span>
+        ))
+      }
+    </div>
+  );
 }

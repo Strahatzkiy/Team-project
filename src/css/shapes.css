@@ -33,6 +33,95 @@
     user-select: text;
 }
 
+.arrow-container {
+    display: flex;
+    align-items: bottom;
+}
+
+.arrow-input {
+    position: absolute;
+    text-align: center;
+    font-size: 16px; /* Размер текста */
+    bottom: 0px;
+    left: -20px;
+    margin-right: 5px; /* Отступ между текстом и стрелкой */
+    margin-bottom: 5px;
+    width: 120px;
+}
+
+.arrow-input.left {
+    left: 20px; bottom: 15px;
+    width: 220px;
+}
+
+.arrow-input.right {
+    left: 20px; bottom: 15px;
+    width: 200px;
+}
+
+.arrow-input.top {
+    left: -45px; bottom: -5px;
+}
+
+.arrow-input.bottom {
+    left: -45px; bottom: -150px;
+}
+
+.arrow-span {
+    position: absolute;
+    text-align: center;
+    font-size: 14pt; /* Размер текста */
+    bottom: 0px;
+    left: -20px;
+    margin-right: 5px; /* Отступ между текстом и стрелкой */
+    margin-bottom: 5px;
+    width: 120px;
+}
+
+.arrow-span.left {
+    left: 20px; bottom: 0px;
+    width: 220px;
+}
+
+.arrow-span.right {
+    left: 20px; bottom: 0px;
+    width: 200px;
+}
+
+.arrow-span.top {
+    left: -50px; bottom: 0px;
+}
+
+.arrow-span.bottom {
+    left: -50px; bottom: -170px;
+}
+
+.arrow-delete {
+    position: absolute;
+    font-size: 16px;
+    bottom: 0px;
+    left: 20px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    width: 80px;
+}
+
+.arrow-delete.left {
+    left: -120px; bottom: 15px;
+}
+
+.arrow-delete.right {
+    left: 220px; bottom: 15px;
+}
+
+.arrow-delete.top {
+    left: -30px; bottom: 35px;
+}
+
+.arrow-delete.bottom {
+    left: -30px; bottom: -200px;
+}
+
 /* Эффект переносимого объекта */
 .dragging {
     opacity: 0.5;
@@ -56,25 +145,25 @@ button:active {
 }
 
 .top-button {
-    top: -45px;
+    top: 10px;
     left: 50%;
     transform: translateX(-50%);
 }
 
 .right-button {
     top: 50%;
-    right: -45px;
+    right: 10px;
     transform: translateY(-50%);
 }
 
 .bottom-button {
-    bottom: -45px;
+    bottom: 10px;
     left: 50%;
     transform: translateX(-50%);
 }
 
 .left-button {
     top: 50%;
-    left: -45px;
+    left: 10px;
     transform: translateY(-50%);
 }
