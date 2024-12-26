@@ -10,9 +10,9 @@ import copy from "../image/copy.png";
 
 // Контейнер заголовка
 export const HeaderContainer = () => {
-    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+    /*const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const openSettings = () => setIsSettingsOpen(true);
-    const closeSettings = () => setIsSettingsOpen(false);
+    const closeSettings = () => setIsSettingsOpen(false);*/
     return ( 
       <header className="header container">
       <Link to="/">
@@ -20,18 +20,15 @@ export const HeaderContainer = () => {
       </Link>
       <nav>
         <ul>
-          <li><a href="idef0/a0">Расширить</a></li>
-          <li><a href="#">Имя файла</a></li>
+          <li><a href="idef0/a0">Декомпозировать</a></li>
+          { /*<li><a href="#">Имя файла</a></li>
           <li><a href="#">Файл</a></li>
-          <li><a href="#">Поделиться</a></li>
-          <li><a href="download" onClick={(e) => { e.preventDefault(); handleDownload(); }}>Экспортировать</a></li>
           <li><a href="#">Вид</a></li>
+          <li><a href="#">Поделиться</a></li>*/ }
+          <li><a href="download" onClick={(e) => { e.preventDefault(); handleDownload(); }}>Экспортировать</a></li>
           <li><a href="clear" onClick={(e) => { e.preventDefault(); clearWorkspace(); }}>Очистить кэш</a></li>
         </ul>
       </nav>
-      <div>
-      {/* <Settings isOpen={isSettingsOpen} onClose={closeSettings} /> */}
-      </div>
       </header>
     );
   }
